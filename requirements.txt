@@ -1,0 +1,20 @@
+# Core Dependencies for Perceptron Multi-Class Classification
+# Updated: 2026-01-12
+#
+# This is the MINIMAL setup recommended in the dependency audit.
+# For additional options, see DEPENDENCY_AUDIT_REPORT.md
+
+# Numerical computing - Essential for matrix operations (W_c, X)
+numpy==1.26.3
+
+# Visualization - For plotting training errors and results
+matplotlib==3.8.2
+
+# Optional: Uncomment if needed for evaluation metrics
+# scikit-learn==1.4.0
+
+# Optional: Uncomment if needed for testing
+# pytest==7.4.3
+
+# Optional: Uncomment if working with CSV data
+# pandas==2.1.4
