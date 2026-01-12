@@ -64,10 +64,15 @@ EX3_BINA/
 ├── DEPENDENCY_AUDIT_REPORT.md    # Comprehensive dependency analysis
 ├── requirements.txt              # Python dependencies
 ├── .gitignore                    # Git ignore patterns
-├── perceptron.py                 # (To be implemented) Core Perceptron class
-├── train.py                      # (To be implemented) Training script
-├── evaluate.py                   # (To be implemented) Evaluation script
-└── utils.py                      # (To be implemented) Helper functions
+├── perceptron.py                 # Core Multi-Class Perceptron implementation
+├── data_loader.py                # Data loading utilities
+├── evaluate.py                   # Evaluation and confusion matrix utilities
+├── run_experiments.py            # Main script to run all experiments
+└── digitdata/                    # Data directory (YOU MUST ADD THIS)
+    ├── trainingimages            # Training images file
+    ├── traininglabels            # Training labels file
+    ├── testimages                # Test images file
+    └── testlabels                # Test labels file
 ```
 
 ## Assignment Requirements
@@ -113,24 +118,77 @@ Implement Perceptron algorithm for 10-class classification (digits 0-9) with wei
    - Diagonal: Correct classifications
    - Matrix sum: 1.0 (100%)
 
-## Usage
+## Setup Data Files
 
-### Training
-```bash
-# Train with fixed learning rate
-python train.py --variant fixed --epochs 4 --alpha 1.0
+**IMPORTANT:** Before running the experiments, you must add the data files!
 
-# Train with decreasing learning rate
-python train.py --variant decreasing --epochs 4 --alpha 1.0 --decay 0.8
+1. Create a folder named `digitdata` in the project root directory
+2. Copy the following files into the `digitdata` folder:
+   - `trainingimages`
+   - `traininglabels`
+   - `testimages`
+   - `testlabels`
+
+Your directory structure should look like:
+```
+EX3_BINA/
+├── digitdata/
+│   ├── trainingimages
+│   ├── traininglabels
+│   ├── testimages
+│   └── testlabels
+├── perceptron.py
+├── data_loader.py
+└── ... (other files)
 ```
 
-### Evaluation
-```bash
-# Evaluate trained model
-python evaluate.py --model-path models/perceptron.pkl
+## Usage
 
-# Generate confusion matrix
-python evaluate.py --model-path models/perceptron.pkl --confusion-matrix
+### Running All Experiments (Recommended)
+
+To run both variants and get all required outputs for the assignment:
+
+```bash
+python run_experiments.py
+```
+
+This will:
+1. Load training and test data
+2. Train Variant 1 (fixed learning rate α=1) for 4 epochs
+3. Train Variant 2 (decreasing learning rate) for 4 epochs
+4. Report training errors per epoch for both variants
+5. Report test errors for both variants
+6. Generate confusion matrices for both variants
+7. Save confusion matrices to files
+
+**Output files:**
+- `confusion_matrix_variant1.txt` - Confusion matrix for fixed α
+- `confusion_matrix_variant2.txt` - Confusion matrix for decreasing α
+
+### Running Individual Experiments
+
+If you want to run custom experiments, you can use the Python API:
+
+```python
+from perceptron import MultiClassPerceptron
+from data_loader import load_training_data, load_test_data
+
+# Load data
+X_train, y_train = load_training_data()
+X_test, y_test = load_test_data()
+
+# Create and train model
+model = MultiClassPerceptron(
+    n_classes=10,
+    learning_rate=1.0,
+    decay_rate=None  # or 0.8 for decreasing variant
+)
+
+history = model.fit(X_train, y_train, n_epochs=4)
+
+# Evaluate
+predictions, errors, accuracy = model.evaluate(X_test, y_test)
+conf_matrix = model.confusion_matrix(X_test, y_test, normalize=True)
 ```
 
 ## Implementation Notes
